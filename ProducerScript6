@@ -1,0 +1,49 @@
+local Players = game:GetService("Players")
+
+local ProducerPart = script.Parent.Producer.MainPart
+local MovingParts = script.Parent.MovingParts
+
+local unlocksFolder = script.Parent.Parent
+local AbsorbingPart = unlocksFolder:WaitForChild("Dropper_1"):WaitForChild("AbsorbingPart")
+
+local player = Players:GetPlayers()[1]
+if not player then
+	player = Players.PlayerAdded:Wait()
+end
+
+local function ProduceFunction()
+	while task.wait(1.5) do
+		local Part = Instance.new("Part", MovingParts)
+
+		Part.Position = ProducerPart.Position
+		Part.Size = ProducerPart.Size
+		Part.Color = ProducerPart.Color
+		Part.Material = ProducerPart.Material
+		
+		Part:SetNetworkOwner(nil)
+		
+		Part.Name = "Part6"
+		
+		local PartValue = Instance.new("StringValue", Part)
+		PartValue.Name = "PartValue"
+		PartValue.Value = "UndefinedValue"
+	end
+end
+
+local function OnTouch(hit)
+	if hit.Name == "Part6" then
+		local leaderstats = player:FindFirstChild("leaderstats")
+		if not leaderstats then return end
+		
+		local moneyVal = leaderstats:FindFirstChild("Money")
+		if not moneyVal then return end
+		
+		hit:Destroy()
+		
+		moneyVal.Value += 250
+	end
+end
+
+AbsorbingPart.Touched:Connect(OnTouch)
+
+ProduceFunction()
